@@ -8,6 +8,7 @@ use App\Models\Portfolio;
 use Faker\Generator as Faker;
 use Illuminate\Support\Str;
 use App\Models\Type;
+use Illuminate\Support\Facades\Schema;
 
 class PortfolioSeeder extends Seeder
 {
@@ -18,7 +19,10 @@ class PortfolioSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
+        Schema::disableForeignKeyConstraints();
         Portfolio::truncate();
+        schema::enableForeignKeyConstraints();
+
 
         for($i = 0; $i < 20; $i++) {
             $type = Type::inRandomOrder()->first();

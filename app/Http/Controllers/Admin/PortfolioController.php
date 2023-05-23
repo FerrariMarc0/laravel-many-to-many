@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
 use App\Http\Requests\StorePortfolioRequest;
 use App\Http\Requests\UpdatePortfolioRequest;
+use App\Models\Technology;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Type;
@@ -31,7 +32,9 @@ class PortfolioController extends Controller
     public function create()
     {
         $types = Type::all();
-        return view('admin.portfolios.create', compact('types'));
+        $technologies = Technology::all();
+
+        return view('admin.portfolios.create', compact('types', 'technologies'));
     }
 
     /**
@@ -47,13 +50,18 @@ class PortfolioController extends Controller
         $portfolio = new Portfolio();
         $portfolio->fill($data);
 
-        $portfolio->slug = Str::slug($data['name']);
-
-        if(isset($data['image'])){
+        if(isset($data['image']))
+        {
             $portfolio->image = Storage::put('uploads', $data['image']);
         }
 
+        $portfolio->slug = Str::slug($data['name']);
         $portfolio->save();
+
+        if(isset($data['technologies']))
+        {
+            $portfolio->technologies()->sync($data['technologies']);
+        }
 
         return to_route('admin.portfolios.index')->with('message', 'Hai inserito un nuovo progetto!');
     }
@@ -77,7 +85,10 @@ class PortfolioController extends Controller
      */
     public function edit(Portfolio $portfolio)
     {
-        return view('admin.portfolios.edit', compact('portfolio'));
+        $types = Type::all();
+        $technologies = Technology::all();
+
+        return view('admin.portfolios.edit', compact('portfolio', 'types', 'technologies'));
     }
 
     /**
@@ -93,24 +104,27 @@ class PortfolioController extends Controller
         $data = $request->validated();
         $portfolio->slug = Str::slug($data['name']);
 
-        if(empty($data['set_image'])){
+        if(empty($data['set_image']))
+        {
             if($portfolio->image){
                 Storage::delete($portfolio->image);
                 $portfolio->image = null;
             }
-            } else {
-                if(isset($data['image'])){
-
-                    if($portfolio->image){
+        } else {
+                if(isset($data['image']))
+                {
+                    if($portfolio->image)
+                    {
                         Storage::delete($portfolio->image);
                     }
                     $portfolio->image = Storage::put('uploads', $data['image']);
                 }
             }
 
+        $technologies = isset($data['technologies']) ? $data['technologies'] : [];
+        $portfolio->technologies()->sync($technologies);
 
         $portfolio->update($data);
-
         return to_route('admin.portfolios.index')->with('message', "Progetto $portfolio->id aggiornato con successo!");
     }
 

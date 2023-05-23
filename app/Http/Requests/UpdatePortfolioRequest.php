@@ -29,7 +29,8 @@ class UpdatePortfolioRequest extends FormRequest
             'description' =>'nullable',
             'start_date' => 'required|date',
             'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|image|max:2048',
-            'set_image' => 'boolean'
+            'set_image' => 'boolean',
+            'technologies' => 'nullable|exists:technologies,id'
         ];
     }
 }

@@ -28,6 +28,15 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <h6 class="mb-3">Technologies</h6>
+                @foreach($technologies as $technology)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="technologies" value="{{$technology->id}}" name="technologies[]" {{ in_array($technology->id, old('technologies', [])) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="technologies">{{$technology->name}}</label>
+                    </div>
+                @endforeach
+            </div>
 
             <div class="mb-3">
                 <label for="start_date">Data</label><br>

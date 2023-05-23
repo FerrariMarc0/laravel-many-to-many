@@ -31,6 +31,17 @@
                 <input class="form-check-input" type="checkbox" role="switch" id="set_image" value="1" name="set_image" @if($portfolio->image) checked @endif>
             </div>
 
+            <div class="mb-3">
+                <h6 class="mb-3">Technologies</h6>
+
+                @foreach($technologies as $technology)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="technologies" value="{{$technology->id}}" name="technologies[]" {{ $portfolio->technologies->contains($technology->id) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="technologies">{{$technology->name}}</label>
+                    </div>
+                @endforeach
+            </div>
+
             <div class="mb-3 @if(!$portfolio->image) d-none @endif" id="image-input-box">
                 <label for="image" class="form-label">Immagine</label>
                 <input class="form-control" type="file" id="image" name="image">

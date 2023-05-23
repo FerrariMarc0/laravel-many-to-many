@@ -29,6 +29,7 @@ class StorePortfolioRequest extends FormRequest
             'start_date' => 'required|date',
             'image' => 'nullable|mimes:jpeg,png,jpg,gif,svg|image|max:2048',
             'type_id' => 'nullable|exists:types,id',
+            'technologies' => 'nullable|exists:technologies,id'
         ];
     }
     public function messages(){
